@@ -54,7 +54,7 @@ public class BloccContractGateway {
    * @param peerEndpoint gateway peer endpoint
    * @param overrideAuth overrides the authority used with TLS and HTTP virtual hosting
    */
-  protected BloccContractGateway(
+  public BloccContractGateway(
       String mspId,
       String channelName,
       String chaincodeName,

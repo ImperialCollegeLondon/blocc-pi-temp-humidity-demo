@@ -36,7 +36,7 @@ jacocoTestReport {
 
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: ['uk/ac/ic/doc/blocc/BloccContractGateway.*'])
+            fileTree(dir: it, exclude: ['uk/ac/ic/doc/blocc/BloccContractGateway.*', 'uk/ac/ic/doc/blocc/example/**'])
         }))
     }
 }
@@ -44,7 +44,7 @@ jacocoTestReport {
 jacocoTestCoverageVerification {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: ['uk/ac/ic/doc/blocc/BloccContractGateway.*'])
+            fileTree(dir: it, exclude: ['uk/ac/ic/doc/blocc/BloccContractGateway.*', 'uk/ac/ic/doc/blocc/example/**'])
         }))
     }
 

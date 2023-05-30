@@ -6,18 +6,36 @@ import org.hyperledger.fabric.client.CommitStatusException;
 import org.hyperledger.fabric.client.Contract;
 import org.hyperledger.fabric.client.EndorseException;
 import org.hyperledger.fabric.client.SubmitException;
+import uk.ac.ic.doc.blocc.clock.Clock;
+import uk.ac.ic.doc.blocc.clock.SystemClock;
 
 public class TemperatureHumidityReadingContractApp {
 
   private final Contract contract;
+  private final TemperatureHumiditySensor sensor;
+  private final Clock clock;
 
-  public TemperatureHumidityReadingContractApp(Contract contract) {
+  public TemperatureHumidityReadingContractApp(
+      Contract contract, TemperatureHumiditySensor sensor) {
     this.contract = contract;
+    this.sensor = sensor;
+    clock = new SystemClock();
   }
 
-  public String addReading(
-      final float temperature, final float relativeHumidity, final long timestamp)
+  public TemperatureHumidityReadingContractApp(
+      Contract contract, TemperatureHumiditySensor sensor, Clock clock) {
+    this.contract = contract;
+    this.sensor = sensor;
+    this.clock = clock;
+  }
+
+  public String addReading()
       throws EndorseException, CommitException, SubmitException, CommitStatusException {
+
+    float temperature = sensor.getTemperature();
+    float relativeHumidity = sensor.getRelativeHumidity();
+    long timestamp = clock.now();
+
     System.out.printf("Adding a new reading at %s\n", Instant.ofEpochSecond(timestamp));
 
     // TODO: catch exceptions

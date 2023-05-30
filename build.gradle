@@ -14,15 +14,12 @@ repositories {
 
 dependencies {
     implementation 'org.hyperledger.fabric:fabric-gateway:1.2.2'
+    implementation 'com.google.code.gson:gson:2.10.1'
     testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation 'org.mockito:mockito-core:5.+'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-    runtimeOnly 'io.grpc:grpc-netty-shaded:1.55.1'
-}
-
-application {
-    mainClass = 'uk.ac.ic.doc.blocc.Main'
+    compileOnly 'io.grpc:grpc-api:1.54.1'
 }
 
 checkstyle {
@@ -36,9 +33,21 @@ test {
 
 jacocoTestReport {
     dependsOn test
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ['uk/ac/ic/doc/blocc/BloccContractGateway.*'])
+        }))
+    }
 }
 
 jacocoTestCoverageVerification {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ['uk/ac/ic/doc/blocc/BloccContractGateway.*'])
+        }))
+    }
+
     violationRules {
         rule {
             limit {

@@ -16,6 +16,7 @@ import org.hyperledger.fabric.client.SubmitException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import uk.ac.ic.doc.blocc.clock.Clock;
+import uk.ac.ic.doc.blocc.sensor.TemperatureHumiditySensor;
 
 class TemperatureHumidityReadingContractAppTest {
 

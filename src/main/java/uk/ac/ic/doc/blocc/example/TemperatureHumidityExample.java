@@ -4,7 +4,7 @@ import java.nio.file.Paths;
 import java.util.Random;
 import uk.ac.ic.doc.blocc.BloccContractGateway;
 import uk.ac.ic.doc.blocc.TemperatureHumidityReadingContractApp;
-import uk.ac.ic.doc.blocc.TemperatureHumiditySensor;
+import uk.ac.ic.doc.blocc.sensor.TemperatureHumiditySensor;
 
 public class TemperatureHumidityExample {
   private static class MockedSensor implements TemperatureHumiditySensor {

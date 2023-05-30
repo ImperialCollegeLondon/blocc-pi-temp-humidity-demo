@@ -8,6 +8,7 @@ import org.hyperledger.fabric.client.EndorseException;
 import org.hyperledger.fabric.client.SubmitException;
 import uk.ac.ic.doc.blocc.clock.Clock;
 import uk.ac.ic.doc.blocc.clock.SystemClock;
+import uk.ac.ic.doc.blocc.sensor.TemperatureHumiditySensor;
 
 public class TemperatureHumidityReadingContractApp {
 

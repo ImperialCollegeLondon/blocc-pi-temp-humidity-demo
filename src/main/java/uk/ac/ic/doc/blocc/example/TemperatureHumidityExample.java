@@ -46,5 +46,7 @@ public class TemperatureHumidityExample {
       app.addReading();
       count++;
     }
+
+    gateway.close();
   }
 }

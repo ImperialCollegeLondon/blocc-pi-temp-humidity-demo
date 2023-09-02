@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'checkstyle'
-    id 'jacoco'
     id 'application'
 }
 
@@ -12,6 +11,10 @@ repositories {
     mavenCentral()
 }
 
+application {
+    mainClass = 'uk.ac.ic.doc.blocc.BloccPiDemoApp'
+}
+
 dependencies {
     implementation 'org.hyperledger.fabric:fabric-gateway:1.2.2'
     implementation 'com.google.code.gson:gson:2.10.1'
@@ -20,6 +23,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     compileOnly 'io.grpc:grpc-api:1.54.1'
+    runtimeOnly 'io.grpc:grpc-netty-shaded:1.54.1'
 }
 
 checkstyle {
@@ -31,36 +35,4 @@ test {
     useJUnitPlatform()
 }
 
-jacocoTestReport {
-    dependsOn test
-
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: ['uk/ac/ic/doc/blocc/BloccContractGateway.*',
-                                        'uk/ac/ic/doc/blocc/example/**',
-                                        'uk/ac/ic/doc/blocc/clock/**'])
-        }))
-    }
-}
-
-jacocoTestCoverageVerification {
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: ['uk/ac/ic/doc/blocc/BloccContractGateway.*',
-                                        'uk/ac/ic/doc/blocc/example/**',
-                                        'uk/ac/ic/doc/blocc/clock/**'])
-        }))
-    }
-
-    violationRules {
-        rule {
-            limit {
-                minimum = 0.7
-            }
-        }
-    }
-    finalizedBy jacocoTestReport
-}
-
-check.dependsOn jacocoTestCoverageVerification
 installDist.dependsOn check

@@ -144,9 +144,20 @@ public class BloccContractGateway {
     }
   }
 
-  public void close() throws Exception {
+  public void close() {
     gateway.close();
-    channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
+    channel.shutdownNow();
+
+    try {
+      // Wait for existing tasks to terminate
+      if (!channel.awaitTermination(5, TimeUnit.SECONDS)) {
+        channel.shutdownNow(); // Cancel currently executing tasks
+      }
+    } catch (InterruptedException e) {
+      // If awaitTermination is interrupted, cancel tasks
+      channel.shutdownNow();
+      Thread.currentThread().interrupt();
+    }
   }
 
   public Contract getContract() {

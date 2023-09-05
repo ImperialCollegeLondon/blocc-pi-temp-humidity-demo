@@ -1,6 +1,9 @@
 package uk.ac.ic.doc.blocc;
 
 import java.time.Instant;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hyperledger.fabric.client.CommitException;
 import org.hyperledger.fabric.client.CommitStatusException;
 import org.hyperledger.fabric.client.Contract;
@@ -15,6 +18,7 @@ public class TemperatureHumidityReadingContractApp {
   private final Contract contract;
   private final TemperatureHumiditySensor sensor;
   private final Clock clock;
+  private static final Logger logger = LogManager.getLogger();
 
   public TemperatureHumidityReadingContractApp(
       Contract contract, TemperatureHumiditySensor sensor) {
@@ -37,7 +41,8 @@ public class TemperatureHumidityReadingContractApp {
     float relativeHumidity = sensor.getRelativeHumidity();
     long timestamp = clock.now();
 
-    System.out.printf("Adding a new reading at %s\n", Instant.ofEpochSecond(timestamp));
+    logger.info("Adding a new reading at " + Instant.ofEpochSecond(timestamp).toString() +
+                    ": temperature=" + temperature + ", relativeHumidity=" + relativeHumidity);
 
     // TODO: catch exceptions
 

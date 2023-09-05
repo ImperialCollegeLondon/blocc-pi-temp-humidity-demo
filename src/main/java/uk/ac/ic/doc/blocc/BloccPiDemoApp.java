@@ -1,5 +1,7 @@
 package uk.ac.ic.doc.blocc;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hyperledger.fabric.client.CommitException;
 import org.hyperledger.fabric.client.CommitStatusException;
 import org.hyperledger.fabric.client.EndorseException;
@@ -34,6 +36,7 @@ public class BloccPiDemoApp {
     }
 
     public static void main(String[] args) {
+        Logger logger = LogManager.getLogger();
 
         int containerNum = Integer.parseInt(System.getenv("FABRIC_CONTAINER_NUM"));
         float mean = Float.parseFloat(System.getenv("FABRIC_SENSOR_MEAN_TEMPERATURE"));
@@ -52,6 +55,8 @@ public class BloccPiDemoApp {
         Path tlsCertPath = Paths.get(String.format("peers/peer0.container%d.blocc.doc.ic.ac.uk/tls/ca.crt", containerNum));
         String overrideAuth = String.format("blocc-container%d", containerNum);
 
+        logger.info("Creating Gateway");
+
         // Create gateway
         BloccContractGateway gateway =
                 new BloccContractGateway(
@@ -65,22 +70,29 @@ public class BloccPiDemoApp {
                         fabricPeerAddress,
                         overrideAuth);
 
+        logger.info("Creating App");
+
         TemperatureHumidityReadingContractApp app =
                 new TemperatureHumidityReadingContractApp(gateway.getContract(), new MockedSensor(mean));
 
+        logger.info("Creating executor");
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-
         executor.scheduleAtFixedRate(() -> {
             try {
                 app.addReading();
             } catch (EndorseException | CommitException | SubmitException | CommitStatusException e) {
-                System.err.println(e.getMessage());
+                logger.error(e);
             }
         }, 0, interval, TimeUnit.SECONDS);
 
+        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+            logger.error("Uncaught exception in thread " + thread.getName() + ": " + throwable.getMessage());
+            throwable.printStackTrace();
+        });
+
         // Shutdown hook
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("Shutdown initiated...");
+            logger.info("Shutdown initiated...");
             gateway.close();
             executor.shutdown(); // Disable new tasks from being submitted
             try {
@@ -93,7 +105,7 @@ public class BloccPiDemoApp {
                 executor.shutdownNow();
                 Thread.currentThread().interrupt();
             }
-            System.out.println("Executor shut down.");
+            logger.info("Executor shut down...");
         }));
 
     }

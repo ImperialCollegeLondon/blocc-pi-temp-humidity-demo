@@ -9,4 +9,4 @@ WORKDIR /app
 COPY build/install/blocc-temp-humidity-app/ .
 COPY scripts/raft-leader-check.sh .
 
-ENTRYPOINT ["./raft-leader-check.sh "]
+ENTRYPOINT ["./raft-leader-check.sh"]
